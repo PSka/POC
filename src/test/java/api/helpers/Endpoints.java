@@ -1,0 +1,14 @@
+package api.helpers;
+
+public interface Endpoints {
+
+    Integer port_number = 3005;
+    String PASSWORD = "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjY1MDYxMDg5NzYsImp0aSI6IjFiOGJhY2FjLTFkMDQtNGI4MC1hYTE2LTIxMDBmNGM4MDhlMSIsImNsaWVudElkIjoiRFhQX1RQUCIsInVzZXJUeXBlIjoiQkFOS19VU0VSIiwidXNlcklkIjoiam50YWtwZSIsInRlbmFudElkIjoiU0JTIiwiY29tcGFueUNvZGUiOiJTb3ByYSBTdGVyaWEiLCJidXNpbmVzc0RhdGUiOiIyMDE4LTA1LTEwIiwiZGVsZWdhdGVJZCI6InRwcElkIiwiYXV0aG9yaXphdGlvbnMiOnsib3BlcmF0aW9uYWxQb3NpdGlvbklkIjpbIkFHQU5CTyJdLCJ0cHAiOlsiQUlTIiwiUElTIl19LCJjb25uZWN0b3JzSW5mb3JtYXRpb24iOnsiY29ubmVjdG9yLWNicyI6eyJwcmluY2lwYWxJZGVudGlmaWVyIjoiMDAwMDAwNEgiLCJ0aGlyZFBhcnR5TnVtYmVyIjoiMDUwNTk5MDAiLCJ2YWxpZGF0aWVHZWx1a3QiOiJ0cnVlIn0sImF1dGhlbnRpY2F0aW9uIjp7InByaW5jaXBhbElkZW50aWZpZXIiOiIwMDAwMDA0SCIsInRoaXJkUGFydHlOdW1iZXIiOiIwNTA1OTkwMCIsInZhbGlkYXRpZUdlbHVrdCI6InRydWUifX19.T-Rv8nUa-8QUktl2mX3w2Oxn2G9ZiA0zHf0cJR3WnlgMj8Z_qObL8zbSJZCs5CaiyNT1IM4Np0N6y7yU90GMfouXKzD0YYmg-QG5Be47q4Ur7UMrzDTxxjjEzETiQyIQbJKAfiD3oCzW3OOtKcqrfJyCh1XYYBjHl4f0kdiIi1Xu57Anr2y2fJdXX-W4HqSj19J2pFZzNPIqMPtK3uWgVIeXEeuF2NrkmeVLue9G65majDtL64nouSgX-9XL3AKiXq-ksyiR8pIgOm4bI5wS0oOqeEX-SC0B7burdlhE0lWJ7i7tncAnXf5zcHRHeDKEmTM5YhHeOpELNa467xqk7w";
+    String GET_EMPLOYEE = "/employees";
+//    String GET_EMPLOYEE = "/tpps";
+    String POST_EMPLOYEE_PARAM = "/posts";
+    String GET_ALL="/employee/getAll";
+    String GET_EMPLOYEE_PATH_PARAM ="/employee/getEmployee/{employeeId}";
+    String GET_EMPLOYEE_QUERY_PARAM = "/employee/getEmployeeQuery";
+    String GOOGLE_API = "/v1/volumes";
+}

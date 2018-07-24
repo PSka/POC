@@ -1,0 +1,111 @@
+group 'try.gradle.api'
+version '1.0-SNAPSHOT'
+
+
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+
+}
+
+ext.cukesVersion = '1.2.5'
+dependencies {
+//    compile group: 'junit', name: 'junit', version: '4.12'
+    compile group:'info.cukes',name:'cucumber-java',version:'1.2.5'
+    compile 'io.rest-assured:rest-assured:3.0.1'
+    compile 'org.apache.poi:poi-ooxml:3.11'
+    compile 'com.jayway.restassured:rest-assured:2.9.0'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'
+    testCompile group: 'com.google.truth', name: 'truth', version: '0.41'
+    testCompile 'info.cukes:cucumber-testng:1.2.5'
+    compile 'com.aventstack:extentreports:3.1.1'
+    compile 'com.vimalselvam:cucumber-extentsreport:3.0.1'
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile 'com.github.javafaker:javafaker:0.12'
+    compile 'org.seleniumhq.selenium:selenium-java:3.9.1'
+    compile group: 'info.cukes', name: 'cucumber-core', version: "$cukesVersion"
+    testCompile group: 'org.testng', name: 'testng', version: '6.9.10'
+
+// Parallel Execution Dependencies -- Start
+//    compile group: 'net.masterthought', name: 'cucumber-reporting', version: "3.5.1"
+//    compile group: 'com.googlecode.totallylazy', name: 'totallylazy', version: '1.85'
+//    compile group: 'info.cukes', name: 'cucumber-junit', version: "$cukesVersion"
+//    compile group: 'info.cukes', name: 'cucumber-core', version: "$cukesVersion"
+//    compile group: 'info.cukes', name: 'cucumber-java8', version: "$cukesVersion"
+//    compile group: 'org.codehaus.gpars', name: 'gpars', version: '1.1.0'
+//
+//    compile("org.codehaus.groovy:groovy-all:2.4.7")
+//    compile files("$buildDir/classes/main")
+// Parallel Execution Dependencies -- End
+
+}
+
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat "full"
+        events "started", "skipped", "passed", "failed"
+        showStandardStreams true
+    }
+}
+
+sourceSets {
+    main.java.srcDir "src/main"
+    test.java.srcDir "src/test"
+}
+
+task hello(type: Test) {
+    useTestNG {
+        'src/test/java/cucumbertests/executeAllfeatures.class'
+    }
+}
+
+task runInSequence(dependsOn: testClasses) {
+    doLast {
+//        def arglist = ["-p", "pretty", "-p", "json:${reporting.baseDir}/cucumber/cucumber.json", "--glue", "com.camiloribeiro",
+//                       "${project.projectDir}/src/main/java/com/camiloribeiro/features"]
+
+        def arglist = ['--plugin', 'pretty', '--glue', 'glue', 'src/test/resources/featuresfiles']
+        javaexec {
+            main = "cucumber.api.cli.Main"
+            classpath = configurations.testRuntimeClasspath + sourceSets.main.output + sourceSets.test.output
+            args = arglist
+        }
+
+    }
+
+}
+
+task runInParallel {
+    doLast {
+        def testProperties = "-DsomePropertie=somePropertie"
+        runCucumberTests(testProperties, "~@pending")
+    }
+}
+
+def runCucumberTests(testProperties, tag) {
+    def features = fileTree(dir: "${project.projectDir}src/test/resources/featuresfiles/").include '**/*.feature'
+
+    GParsPool.withPool(10) {
+        features.eachParallel { File file ->
+            exec {
+                executable "sh"
+                args "-c", "mkdir -p ${reporting.baseDir}/cucumber" +
+                        "&& java ${testProperties} " +
+                        "-cp ${sourceSets.main.runtimeClasspath.asPath} " +
+                        "cucumber.api.cli.Main " +
+                        "--glue classpath:com.camiloribeiro " +
+                        "${project.projectDir}/src/main/java/com/camiloribeiro/features/${file.name} " +
+                        "--plugin json:${reporting.baseDir}/cucumber/${file.name}.json " +
+                        "--plugin pretty > ${reporting.baseDir}/cucumber/${file.name}.log " +
+                        "--tags ${tag}"
+            }
+            println("${file.name}: Scenario output: ${reporting.baseDir}/cucumber/${file.name}.log ")
+        }
+    }
+}
